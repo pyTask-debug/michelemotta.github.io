@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Me</title>
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: #0a0a0a;
+            color: #f5eeee;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .content-column {
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+        }
+       
+        .section {
+            padding: 20px;
+            border-left: 3px solid #fbbf24;
+        }
+       
+        .section h3 {
+            color: #fbbf24;
+            margin-top: 0;
+        }
+        
+        .section p {
+            line-height: 1.6;
+        }
+       
+        .figure-container {
+            position: sticky;
+            top: 20px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            height: fit-content;
+        }
+       
+        .figure-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .figure-container {
+                position: static;
+                margin-top: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content-column">
+            <div class="section">
+                <h3>Background</h3>
+                <p>
+                    No, I'm not the kind of person who writes about their grandfather being a doctor, their first stethoscope at age four, and things like that. I'm still figuring out what I want my "final" field of work to be. Everything I know about what I like, I've learned over time.
+                </p>
+                <p>
+                    I grew up as a very emotional kid, and when the time came to choose a university path, I combined my emotional side with another interest that developed during high school: science — especially mathematics, even though I wasn't very good at it. My interest in the brain — needless to say — is the ultimate combination of psychology (that is, behavior) and biology. In the past couple of years, I've inevitably come into contact with programming, which, I have to admit, I find really fun.
+                </p>
+            </div>
+            
+            <div class="section">
+                <h3>Beyond Science</h3>
+                <p>
+                    Even though science takes up a lot of personal time (although I believe it should be a job that requires as many hours as any other), a researcher is not just a researcher — they are also a person with hobbies and interests.
+                </p>
+                <p>
+                    I am very passionate about politics, I read a lot, and I love cycling up in the mountains.
+                </p>
+            </div>
+        </div>
+        
+        <div class="figure-container">
+            <img src="assets/img/me.jpg" alt="Profile illustration">
+        </div>
+    </div>
+</body>
+</html>

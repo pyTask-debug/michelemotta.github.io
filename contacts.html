@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacts</title>
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: #0a0a0a;
+            color: #f5eeee;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .content-column {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+        
+        .section {
+            padding: 30px;
+            background: rgba(167, 139, 250, 0.08);
+            border-radius: 20px;
+            border: 1px solid rgba(167, 139, 250, 0.2);
+        }
+        
+        .section h3 {
+            color: #F00AF0;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+        
+        .contact-item {
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+        
+        .contact-label {
+            font-size: 0.9rem;
+            color: #9ca3af;
+            margin-bottom: 5px;
+        }
+        
+        .contact-value {
+            font-size: 1.05rem;
+            color: #f5eeee;
+        }
+        
+        .contact-value a {
+            color: #F00AF0;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            display: inline-block;
+            border-radius: 12px;
+            background: rgba(167, 139, 250, 0.1);
+        }
+        
+        .contact-value a:hover {
+            color: #c4b5fd;
+            background: rgba(167, 139, 250, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .figure-container {
+            position: sticky;
+            top: 20px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            height: fit-content;
+        }
+        
+        .figure-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(167, 139, 250, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .figure-container {
+                position: static;
+                margin-top: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content-column">
+            <div class="section">
+                <h3>Email</h3>
+                <div class="contact-item">
+                    <div class="contact-label">Personal</div>
+                    <div class="contact-value">
+                        <a href="mailto:23michele.motta@gmail.com" target="_blank">23michele.motta@gmail.com</a>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-label">Institutional</div>
+                    <div class="contact-value">
+                        <a href="mailto:michele.motta@ub.edu" target="_blank">michele.motta@ub.edu</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>Professional Networks</h3>
+                <div class="contact-item">
+                    <div class="contact-label">LinkedIn</div>
+                    <div class="contact-value">
+                        <a href="https://www.linkedin.com/in/michele-motta-500a87298/" target="_blank">linkedin.com/MicheleMotta</a>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-label">GitHub</div>
+                    <div class="contact-value">
+                        <a href="https://github.com/pyTask-debug" target="_blank">github.com/pyTask-debug</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>Location</h3>
+                <div class="contact-item">
+                    <div class="contact-value">
+                        Barcelona, Spain
+                    </div>
+                </div>
+                <div style="margin-top: 20px;">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2991.0748469412433!2d2.1422366760978715!3d41.437597571293544!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12a497e1ed939031%3A0x624699ce46efd318!2sCampus%20Mundet%20-%20Universitat%20de%20Barcelona!5e0!3m2!1sen!2ses!4v1780055186719!5m2!1sen!2ses" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+        </div>
+        
+        <div class="figure-container">
+            <img src="assets/img/contact.jpg" alt="">
+        </div>
+    </div>
+</body>
+</html>
