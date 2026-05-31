@@ -137,8 +137,8 @@ initBrainIntro();
 
 /* ---- NEURAL NETWORK ---- */
 const CONFIG={
-    neuronsHome:isMobile?60:100,
-    neuronsReduced:isMobile?40:35,
+    neuronsHome:isMobile?25:100,
+    neuronsReduced:isMobile?15:35,
     maxConnectionDistanceHome:250,
     maxConnectionDistanceReduced:100,
     pulseGenerationChance:0.001,
@@ -281,6 +281,7 @@ function animate(){
 }
 
 function openContentView(special){
+    hoverLabel.classList.remove('show');
     if(state.isTransitioning) return;
     state.isTransitioning=true; state.currentView=special.id; state.isReduced=true;
     if(isMobile){state.isTransitioning=false;showContent(special);return;}
@@ -368,6 +369,26 @@ window.addEventListener('resize',()=>{
     if(document.getElementById('introScreen').classList.contains('hidden')){resizeCanvas();initNeurons();}
     else{initBrainIntro();}
 });
+canvas.addEventListener('touchstart', e => {
+e.preventDefault();
+const t = e.touches[0];
+const r = canvas.getBoundingClientRect();
+const pos = { x: t.clientX - r.left, y: t.clientY - r.top };
+CONFIG.specialNeurons.forEach(sp => {
+    if (sp.neuron && sp.neuron.contains(pos.x, pos.y)) {
+        state.hoveredSpecialNeuron = sp;
+    }
+});
+}, { passive: false });
+
+canvas.addEventListener('touchend', e => {
+e.preventDefault();
+hoverLabel.classList.remove('show'); // nasconde subito il tooltip
+if (state.hoveredSpecialNeuron && !state.isTransitioning) {
+    openContentView(state.hoveredSpecialNeuron);
+}
+state.hoveredSpecialNeuron = null;
+}, { passive: false });
 </script>
 </body>
 </html>
