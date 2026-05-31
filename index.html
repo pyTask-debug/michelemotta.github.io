@@ -315,12 +315,30 @@ function openContentView(special){
     animTrans();
 }
 
-function showContent(special){
-    backButton.style.display='block'; centralText.classList.add('hidden'); contentView.style.display='block';
-    backButton.style.background=special.color;
-    backButton.style.boxShadow=`0 0 15px ${special.color}80`;
-    backButton.style.border=`2px solid ${special.color}`;
-    contentView.innerHTML=`<h2 style="color:${special.color};font-weight:bold;">${special.label}</h2><iframe src="${special.url}" width="100%" height="90%"></iframe>`;
+function showContent(special) {
+    centralText.classList.add('hidden');
+    contentView.style.display = 'block';
+
+    if (isMobile) {
+        // Su mobile: back button dentro il contentView, non fixed
+        backButton.style.display = 'none'; // nasconde quello fixed
+        contentView.innerHTML = `
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+                <button onclick="closeContentView()" style="background:${special.color};border:none;padding:10px 20px;border-radius:8px;color:#fff;cursor:pointer;font-weight:600;font-family:'Open Sans',sans-serif;flex-shrink:0;">Back</button>
+                <h2 style="color:${special.color};font-weight:bold;margin:0;">${special.label}</h2>
+            </div>
+            <iframe src="${special.url}" width="100%" style="height:calc(100vh - 80px);border:none;border-radius:8px;background:#fff;"></iframe>
+        `;
+    } else {
+        backButton.style.display = 'block';
+        backButton.style.background = special.color;
+        backButton.style.boxShadow = `0 0 15px ${special.color}80`;
+        backButton.style.border = `2px solid ${special.color}`;
+        contentView.innerHTML = `
+            <h2 style="color:${special.color};font-weight:bold;">${special.label}</h2>
+            <iframe src="${special.url}" width="100%" height="90%"></iframe>
+        `;
+    }
 }
 
 function closeContentView(){
