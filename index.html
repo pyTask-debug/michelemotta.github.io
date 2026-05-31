@@ -40,7 +40,8 @@
         #contentView iframe{border:none;border-radius:8px;background:#fff}
 
         @media(max-width:768px){
-            #centralText{top:20px;right:20px;font-size:2rem;max-width:200px}
+            #centralText{top:20px;right:20px;font-size:1rem;max-width:200px}
+            .signature-svg{width:150vw;}
             #contentView{width:100%;padding:20px;padding-top:70px}
             #backButton{top:10px;left:10px;z-index:300}
         }
@@ -387,6 +388,26 @@ window.addEventListener('resize',()=>{
     if(document.getElementById('introScreen').classList.contains('hidden')){resizeCanvas();initNeurons();}
     else{initBrainIntro();}
 });
+    canvas.addEventListener('touchstart', e => {
+e.preventDefault();
+const t = e.touches[0];
+const r = canvas.getBoundingClientRect();
+const pos = { x: t.clientX - r.left, y: t.clientY - r.top };
+CONFIG.specialNeurons.forEach(sp => {
+    if (sp.neuron && sp.neuron.contains(pos.x, pos.y)) {
+        state.hoveredSpecialNeuron = sp;
+    }
+});
+}, { passive: false });
+
+canvas.addEventListener('touchend', e => {
+e.preventDefault();
+hoverLabel.classList.remove('show'); // nasconde subito il tooltip
+if (state.hoveredSpecialNeuron && !state.isTransitioning) {
+    openContentView(state.hoveredSpecialNeuron);
+}
+state.hoveredSpecialNeuron = null;
+}, { passive: false });
 </script>
 </body>
 </html>
