@@ -322,6 +322,9 @@ function showContent(special) {
     if (isMobile) {
 
         backButton.style.display = 'none'; 
+        const src = special.url.endsWith('.pdf')
+            ? `https://docs.google.com/viewer?url=${encodeURIComponent(location.origin + '/' + special.url)}&embedded=true`
+            : special.url;
         contentView.innerHTML = `
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
                 <button onclick="closeContentView()" style="background:${special.color};border:none;padding:10px 20px;border-radius:8px;color:#fff;cursor:pointer;font-weight:600;font-family:'Open Sans',sans-serif;flex-shrink:0;">Back</button>
