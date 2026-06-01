@@ -44,6 +44,21 @@
             #contentView{width:100%;padding:20px;padding-top:70px}
             #backButton{top:10px;left:10px;z-index:300}
         }
+        #footerCredit{
+            position:fixed;
+            bottom:12px;
+            left:50%;
+            transform:translateX(-50%);
+            font-family:'Saira Extra Condensed',sans-serif;
+            font-size:0.85rem;
+            color:rgba(186,201,204,0.5);
+            letter-spacing:0.08em;
+            z-index:30;
+            pointer-events:none;
+            white-space:nowrap;
+            transition:opacity .5s;
+        }
+        #footerCredit.hidden{opacity:0;}
     </style>
 </head>
 <body>
@@ -316,6 +331,7 @@ function openContentView(special){
 }
 
 function showContent(special) {
+    document.getElementById('footerCredit').classList.add('hidden');
     centralText.classList.add('hidden');
     contentView.style.display = 'block';
     const isPDF = special.url.endsWith('.pdf');
@@ -409,6 +425,7 @@ function downloadPDF(url, filename) {
         .catch(() => window.open(url, '_blank'));
 }
 function closeContentView(){
+    document.getElementById('footerCredit').classList.remove('hidden');
     state.currentView='home';state.isReduced=false;
     backButton.style.display='none';backButton.style.background='rgba(102,126,234,0.8)';
     backButton.style.boxShadow='none';backButton.style.border='none';
@@ -475,5 +492,6 @@ if (state.hoveredSpecialNeuron && !state.isTransitioning) {
 state.hoveredSpecialNeuron = null;
 }, { passive: false });
 </script>
+    <div id="footerCredit">Coltivato a mano da Michele Motta ♥</div>
 </body>
 </html>
