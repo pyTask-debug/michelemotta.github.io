@@ -379,6 +379,8 @@ function drawConnections(){
     const cc=document.getElementById('connectionCount');
     if(state.draggedNeuron && cc){
         cc.style.display='block';
+        cc.style.fontSize = '14px';
+        cc.style.opacity = '0.7';
         cc.style.left=(state.draggedNeuron.x+20)+'px';
         cc.style.top=(state.draggedNeuron.y-20)+'px';
         cc.textContent=dragCount+' connections';
