@@ -233,20 +233,9 @@ class ElectricPulse{
     }
 }
 
-// function resizeCanvas(){
-//     canvas.width = window.innerWidth;
-//     canvas.height = window.innerHeight;
-//     setupNetworkBounds();
-// }
-
 function resizeCanvas(){
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width = window.innerWidth * dpr;
-    canvas.height = window.innerHeight * dpr;
-    canvas.style.width = window.innerWidth + 'px';
-    canvas.style.height = window.innerHeight + 'px';
-    ctx.setTransform(1, 0, 0, 1, 0, 0);  // reset completo
-    ctx.scale(dpr, dpr);
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
     setupNetworkBounds();
 }
 
