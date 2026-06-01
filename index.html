@@ -13,6 +13,10 @@
         #introScreen{position:fixed;inset:0;background:#060606;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:1000;transition:opacity .5s,visibility .5s}
         #introScreen.hidden{opacity:0;visibility:hidden}
         #brainCanvas{position:absolute;inset:0;width:100%;height:100%;cursor:pointer}
+        #neuralCanvas {
+            image-rendering: crisp-edges;
+            image-rendering: pixelated;
+        }
 
         /* FIRMA SVG*/
         .signature-svg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:min(3800px, 180vw);height:auto;z-index:1001;pointer-events:none;display:none}
