@@ -328,7 +328,7 @@ function showContent(special) {
                 <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
                     <button onclick="closeContentView()" style="background:${special.color};border:none;padding:10px 20px;border-radius:8px;color:#fff;cursor:pointer;font-weight:600;font-family:'Open Sans',sans-serif;flex-shrink:0;">Back</button>
                     <h2 style="color:${special.color};font-weight:bold;margin:0;">${special.label}</h2>
-                    <a href="${special.url}" download style="margin-left:auto;background:${special.color};border:none;padding:10px 16px;border-radius:8px;color:#fff;cursor:pointer;font-weight:600;font-family:'Open Sans',sans-serif;text-decoration:none;">⬇ Download</a>
+                   <button onclick="downloadPDF('${special.url}', 'cv.pdf')" style="margin-left:auto;background:${special.color};border:none;padding:10px 16px;border-radius:8px;color:#fff;cursor:pointer;font-weight:600;font-family:'Open Sans',sans-serif;">⬇ Download</button>
                 </div>
                 <div id="pdfContainer" style="width:100%;overflow-y:auto;"></div>
             `;
@@ -368,10 +368,13 @@ function renderPDFMobile(url) {
         try {
             const loadingTask = pdfjsLib.getDocument(url);
             const pdf = await loadingTask.promise;
+            const dpr = window.devicePixelRatio || 2;
 
             for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
                 const page = await pdf.getPage(pageNum);
-                const viewport = page.getViewport({ scale: window.innerWidth / page.getViewport({ scale: 1 }).width });
+                const baseViewport = page.getViewport({ scale: 1 });
+                const scale = (window.innerWidth / baseViewport.width) * dpr;
+                const viewport = page.getViewport({ scale });
 
                 const canvas = document.createElement('canvas');
                 canvas.width = viewport.width;
@@ -385,10 +388,25 @@ function renderPDFMobile(url) {
                 await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
             }
         } catch (e) {
-            container.innerHTML = `<p style="color:#fff;padding:20px;">Errore nel caricamento del PDF. <a href="${url}" style="color:#0AF023;" download>Scaricalo qui</a></p>`;
+            container.innerHTML = `<p style="color:#fff;padding:20px;">Errore. <a href="${url}" style="color:#0AF023;">Apri PDF</a></p>`;
         }
     };
     document.head.appendChild(script);
+}
+
+function downloadPDF(url, filename) {
+    fetch(url)
+        .then(r => r.blob())
+        .then(blob => {
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = filename || 'document.pdf';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+        })
+        .catch(() => window.open(url, '_blank'));
 }
 function closeContentView(){
     state.currentView='home';state.isReduced=false;
