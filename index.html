@@ -44,6 +44,10 @@
             #contentView{width:100%;padding:20px;padding-top:70px}
             #backButton{top:10px;left:10px;z-index:300}
         }
+
+        @media(min-width:769px){
+            .zone-line{position:fixed;background:rgba(255,255,255,0.5);pointer-events:none;z-index:1;}
+        }
         #footerCredit{
             position:fixed;
             bottom:12px;
@@ -188,9 +192,21 @@ class Neuron{
     }
     update(){
         if(!this.isDragging){
-            const nx=this.x+this.vx,ny=this.y+this.vy;
-            if(isPointInNetwork(nx,ny)){this.x=nx;this.y=ny;}
-            else{this.vx*=-1;this.vy*=-1;}
+            if(this.isSpecial && this.zone){
+                // Rimbalza dentro la zona
+                const [x1,y1,x2,y2]=this.zone;
+                const pad=this.radius+5;
+                this.x+=this.vx;
+                this.y+=this.vy;
+                if(this.x<x1+pad){this.x=x1+pad;this.vx=Math.abs(this.vx);}
+                if(this.x>x2-pad){this.x=x2-pad;this.vx=-Math.abs(this.vx);}
+                if(this.y<y1+pad){this.y=y1+pad;this.vy=Math.abs(this.vy);}
+                if(this.y>y2-pad){this.y=y2-pad;this.vy=-Math.abs(this.vy);}
+            } else {
+                const nx=this.x+this.vx,ny=this.y+this.vy;
+                if(isPointInNetwork(nx,ny)){this.x=nx;this.y=ny;}
+                else{this.vx*=-1;this.vy*=-1;}
+            }
         }
         if(this.isSpecial){
             this.glowIntensity+=0.02*this.glowDirection;
@@ -233,6 +249,77 @@ function resizeCanvas(){
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     setupNetworkBounds();
+}
+
+function initNeurons(){
+    state.neurons=[];
+    // Rimuovi vecchie linee
+    document.querySelectorAll('.zone-line').forEach(el=>el.remove());
+
+    if(!isMobile){
+        // Disegna le 4 zone come div
+        const W=canvas.width, H=canvas.height;
+        const midX=W*0.42, midY=H*0.58;  // asimmetrico
+
+        // Linea verticale
+        const vLine=document.createElement('div');
+        vLine.className='zone-line';
+        vLine.style.position='fixed';
+        vLine.style.left=midX+'px';
+        vLine.style.top='0';
+        vLine.style.width='3px';
+        vLine.style.height='100%';
+        vLine.style.backgroundColor='rgba(255,255,255,0.5)';
+        vLine.style.pointerEvents='none';
+        vLine.style.zIndex='1';
+        document.body.appendChild(vLine);
+
+        // Linea orizzontale
+        const hLine=document.createElement('div');
+        hLine.className='zone-line';
+        hLine.style.position='fixed';
+        hLine.style.left='0';
+        hLine.style.top=midY+'px';
+        hLine.style.width='100%';
+        hLine.style.height='3px';
+        hLine.style.backgroundColor='rgba(255,255,255,0.5)';
+        hLine.style.pointerEvents='none';
+        hLine.style.zIndex='1';
+        document.body.appendChild(hLine);
+
+        // Zone: [xMin, yMin, xMax, yMax]
+        const zones=[
+            [0,      0,    midX, midY],  // top-left     → CV (verde)
+            [midX,   0,    W,    midY],  // top-right     → Publications (rosa)
+            [0,      midY, midX, H   ],  // bottom-left   → Contacts (viola)
+            [midX,   midY, W,    H   ]   // bottom-right  → About (giallo)
+        ];
+
+        // Neuroni normali
+        const n=CONFIG.neuronsHome;
+        for(let i=0;i<n;i++) state.neurons.push(new Neuron(Math.random()*canvas.width,Math.random()*canvas.height));
+
+        // Neuroni speciali, uno per zona
+        CONFIG.specialNeurons.forEach((sp,i)=>{
+            const [x1,y1,x2,y2]=zones[i];
+            const x=x1+(x2-x1)/2, y=y1+(y2-y1)/2;
+            const neu=new Neuron(x,y,true,sp);
+            neu.zone=zones[i];
+            sp.neuron=neu;
+            state.neurons.push(neu);
+        });
+    } else {
+        // Mobile: comportamento originale
+        const n=CONFIG.neuronsReduced;
+        for(let i=0;i<n;i++) state.neurons.push(new Neuron(Math.random()*canvas.width,Math.random()*canvas.height));
+        const r=Math.min(canvas.width,canvas.height)*0.4;
+        CONFIG.specialNeurons.forEach((sp,i)=>{
+            const angle=(Math.PI*2*i)/CONFIG.specialNeurons.length;
+            const x=state.networkBounds.centerX+r*Math.cos(angle);
+            const y=state.networkBounds.centerY+r*Math.sin(angle);
+            const neu=new Neuron(x,y,true,sp); sp.neuron=neu; state.neurons.push(neu);
+        });
+    }
 }
 
 function setupNetworkBounds(){
