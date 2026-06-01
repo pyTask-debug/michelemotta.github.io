@@ -318,20 +318,30 @@ function openContentView(special){
 function showContent(special) {
     centralText.classList.add('hidden');
     contentView.style.display = 'block';
+    const isPDF = special.url.endsWith('.pdf');
 
     if (isMobile) {
+        backButton.style.display = 'none';
 
-        backButton.style.display = 'none'; 
-        const src = special.url.endsWith('.pdf')
-            ? `https://docs.google.com/viewer?url=${encodeURIComponent(location.origin + '/' + special.url)}&embedded=true`
-            : special.url;
-        contentView.innerHTML = `
-            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-                <button onclick="closeContentView()" style="background:${special.color};border:none;padding:10px 20px;border-radius:8px;color:#fff;cursor:pointer;font-weight:600;font-family:'Open Sans',sans-serif;flex-shrink:0;">Back</button>
-                <h2 style="color:${special.color};font-weight:bold;margin:0;">${special.label}</h2>
-            </div>
-            <iframe src="${special.url}" width="100%" style="height:calc(100vh - 120px);border:none;border-radius:8px;background:#fff;"></iframe>
-        `;
+        if (isPDF) {
+            contentView.innerHTML = `
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+                    <button onclick="closeContentView()" style="background:${special.color};border:none;padding:10px 20px;border-radius:8px;color:#fff;cursor:pointer;font-weight:600;font-family:'Open Sans',sans-serif;flex-shrink:0;">Back</button>
+                    <h2 style="color:${special.color};font-weight:bold;margin:0;">${special.label}</h2>
+                    <a href="${special.url}" download style="margin-left:auto;background:${special.color};border:none;padding:10px 16px;border-radius:8px;color:#fff;cursor:pointer;font-weight:600;font-family:'Open Sans',sans-serif;text-decoration:none;">⬇ Download</a>
+                </div>
+                <div id="pdfContainer" style="width:100%;overflow-y:auto;"></div>
+            `;
+            renderPDFMobile(special.url);
+        } else {
+            contentView.innerHTML = `
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+                    <button onclick="closeContentView()" style="background:${special.color};border:none;padding:10px 20px;border-radius:8px;color:#fff;cursor:pointer;font-weight:600;font-family:'Open Sans',sans-serif;flex-shrink:0;">Back</button>
+                    <h2 style="color:${special.color};font-weight:bold;margin:0;">${special.label}</h2>
+                </div>
+                <iframe src="${special.url}" width="100%" style="height:calc(100vh - 120px);border:none;border-radius:8px;background:#fff;"></iframe>
+            `;
+        }
     } else {
         backButton.style.display = 'block';
         backButton.style.background = special.color;
@@ -344,6 +354,42 @@ function showContent(special) {
     }
 }
 
+function renderPDFMobile(url) {
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    script.onload = async () => {
+        const pdfjsLib = window['pdfjs-dist/build/pdf'];
+        pdfjsLib.GlobalWorkerOptions.workerSrc =
+            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        const container = document.getElementById('pdfContainer');
+        if (!container) return;
+
+        try {
+            const loadingTask = pdfjsLib.getDocument(url);
+            const pdf = await loadingTask.promise;
+
+            for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                const page = await pdf.getPage(pageNum);
+                const viewport = page.getViewport({ scale: window.innerWidth / page.getViewport({ scale: 1 }).width });
+
+                const canvas = document.createElement('canvas');
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                canvas.style.width = '100%';
+                canvas.style.display = 'block';
+                canvas.style.marginBottom = '8px';
+                canvas.style.borderRadius = '8px';
+                container.appendChild(canvas);
+
+                await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+            }
+        } catch (e) {
+            container.innerHTML = `<p style="color:#fff;padding:20px;">Errore nel caricamento del PDF. <a href="${url}" style="color:#0AF023;" download>Scaricalo qui</a></p>`;
+        }
+    };
+    document.head.appendChild(script);
+}
 function closeContentView(){
     state.currentView='home';state.isReduced=false;
     backButton.style.display='none';backButton.style.background='rgba(102,126,234,0.8)';
