@@ -85,6 +85,7 @@
     <div id="hoverLabel" class="hover-label"></div>
     <button id="backButton">Back</button>
     <div id="contentView"></div>
+    <div id="connectionCount" style="position:fixed;display:none;background:rgba(8,8,8,0.9);border:2px solid #00ffff;color:#00ffff;padding:6px 14px;border-radius:8px;font-family:'Saira Extra Condensed',sans-serif;font-size:1.2rem;pointer-events:none;z-index:200;transition:opacity .2s;"></div>
 </div>
 
 <script>
@@ -344,6 +345,8 @@ function drawConnections(){
     const maxDist=state.isReduced?CONFIG.maxConnectionDistanceReduced:CONFIG.maxConnectionDistanceHome;
     const maxDist2=maxDist*maxDist;
     const ns=state.neurons;
+    let dragCount=0;
+
     for(let i=0;i<ns.length;i++){
         for(let j=i+1;j<ns.length;j++){
             const dx=ns[i].x-ns[j].x,dy=ns[i].y-ns[j].y;
@@ -358,8 +361,24 @@ function drawConnections(){
                 ctx.lineWidth=1.5; ctx.stroke();
                 if(Math.random()<CONFIG.pulseGenerationChance)
                     state.pulses.push(new ElectricPulse(ns[i].x,ns[i].y,ns[j].x,ns[j].y));
+
+                // Conta connessioni del neurone trascinato
+                if(state.draggedNeuron && (ns[i]===state.draggedNeuron || ns[j]===state.draggedNeuron)){
+                    dragCount++;
+                }
             }
         }
+    }
+
+    // Aggiorna il contatore
+    const cc=document.getElementById('connectionCount');
+    if(state.draggedNeuron && cc){
+        cc.style.display='block';
+        cc.style.left=(state.draggedNeuron.x+20)+'px';
+        cc.style.top=(state.draggedNeuron.y-20)+'px';
+        cc.textContent=dragCount+' connections';
+    } else if(cc){
+        cc.style.display='none';
     }
 }
 
