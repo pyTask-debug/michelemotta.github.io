@@ -376,6 +376,8 @@ function openContentView(special){
     hoverLabel.classList.remove('show');
     if(state.isTransitioning) return;
     state.isTransitioning=true; state.currentView=special.id; state.isReduced=true;
+    state.neurons.forEach(n => { if(n.isSpecial) n.zone = null; });
+    document.querySelectorAll('.zone-line').forEach(el=>el.style.display='none');
     if(isMobile){state.isTransitioning=false;showContent(special);return;}
     const duration=CONFIG.transitionDuration,startTime=Date.now();
     const initialBounds={...state.networkBounds};
@@ -507,6 +509,7 @@ function closeContentView(){
     backButton.style.display='none';backButton.style.background='rgba(102,126,234,0.8)';
     backButton.style.boxShadow='none';backButton.style.border='none';
     contentView.style.display='none';centralText.classList.remove('hidden');
+    document.querySelectorAll('.zone-line').forEach(el=>el.style.display='block');
     resizeCanvas();initNeurons();
 }
 
