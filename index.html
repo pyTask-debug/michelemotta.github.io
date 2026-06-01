@@ -87,6 +87,7 @@
     <button id="backButton">Back</button>
     <div id="contentView"></div>
     <div id="connectionCount" style="position:fixed;display:none;background:rgba(8,8,8,0.9);border:2px solid #00ffff;color:#00ffff;padding:6px 14px;border-radius:8px;font-family:'Saira Extra Condensed',sans-serif;font-size:1.2rem;pointer-events:none;z-index:200;transition:opacity .2s;"></div>
+    <div id="actionPotentialCount" style="position:fixed;display:none;background:rgba(8,8,8,0.9);border:2px solid #ff6b6b;color:#ff6b6b;padding:6px 14px;border-radius:8px;font-family:'Saira Extra Condensed',sans-serif;font-size:1.2rem;pointer-events:none;z-index:200;transition:opacity .2s;"></div>
 </div>
 
 <script>
@@ -367,6 +368,9 @@ function drawConnections(){
                 if(state.draggedNeuron && (ns[i]===state.draggedNeuron || ns[j]===state.draggedNeuron)){
                     dragCount++;
                 }
+                if(state.draggedNeuron && (ns[i]===state.draggedNeuron || ns[j]===state.draggedNeuron)){
+                    dragCount++;
+                }
             }
         }
     }
@@ -380,6 +384,21 @@ function drawConnections(){
         cc.textContent=dragCount+' connections';
     } else if(cc){
         cc.style.display='none';
+    }
+    const ap=document.getElementById('actionPotentialCount');
+    if(state.draggedNeuron && ap){
+        const apCount=state.pulses.filter(p=>
+            (p.x1===state.draggedNeuron.x && p.y1===state.draggedNeuron.y) ||
+            (p.x2===state.draggedNeuron.x && p.y2===state.draggedNeuron.y)
+        ).length;
+        ap.style.display='block';
+        ap.style.fontSize = '14px';
+        ap.style.opacity = '0.7';
+        ap.style.left=(state.draggedNeuron.x+20)+'px';
+        ap.style.top=(state.draggedNeuron.y+20)+'px';
+        ap.textContent=apCount+' action potentials';
+    } else if(ap){
+        ap.style.display='none';
     }
 }
 
