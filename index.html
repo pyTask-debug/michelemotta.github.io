@@ -251,6 +251,23 @@ function resizeCanvas(){
     setupNetworkBounds();
 }
 
+function setupNetworkBounds(){
+    let cx,cy,w,h;
+    if(state.currentView==='home'){cx=canvas.width/2;cy=canvas.height/2;w=canvas.width;h=canvas.height;}
+    else if(isMobile){cx=canvas.width/2;cy=canvas.height/2;w=canvas.width;h=canvas.height;}
+    else{w=(canvas.width*CONFIG.networkSizeReduced)*0.80;h=canvas.height;cx=w/2;cy=h/2;}
+    state.networkBounds={centerX:cx,centerY:cy,width:w,height:h,radius:Math.max(w,h)/2};
+}
+
+function isPointInNetwork(x,y){
+    if(!state.networkBounds) return false;
+    if(state.currentView==='home') return x>=0&&x<=canvas.width&&y>=0&&y<=canvas.height;
+    const dx=x-state.networkBounds.centerX,dy=y-state.networkBounds.centerY;
+    return Math.sqrt(dx*dx+dy*dy)<state.networkBounds.radius;
+}
+
+function getMousePos(e){const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top};}
+
 function initNeurons(){
     state.neurons=[];
     // Rimuovi vecchie linee
@@ -320,37 +337,6 @@ function initNeurons(){
             const neu=new Neuron(x,y,true,sp); sp.neuron=neu; state.neurons.push(neu);
         });
     }
-}
-
-function setupNetworkBounds(){
-    let cx,cy,w,h;
-    if(state.currentView==='home'){cx=canvas.width/2;cy=canvas.height/2;w=canvas.width;h=canvas.height;}
-    else if(isMobile){cx=canvas.width/2;cy=canvas.height/2;w=canvas.width;h=canvas.height;}
-    else{w=(canvas.width*CONFIG.networkSizeReduced)*0.80;h=canvas.height;cx=w/2;cy=h/2;}
-    state.networkBounds={centerX:cx,centerY:cy,width:w,height:h,radius:Math.max(w,h)/2};
-}
-
-function isPointInNetwork(x,y){
-    if(!state.networkBounds) return false;
-    if(state.currentView==='home') return x>=0&&x<=canvas.width&&y>=0&&y<=canvas.height;
-    const dx=x-state.networkBounds.centerX,dy=y-state.networkBounds.centerY;
-    return Math.sqrt(dx*dx+dy*dy)<state.networkBounds.radius;
-}
-
-function getMousePos(e){const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top};}
-
-function initNeurons(){
-    state.neurons=[];
-    const n=state.currentView==='home'?CONFIG.neuronsHome:CONFIG.neuronsReduced;
-    if(!state.networkBounds) return;
-    for(let i=0;i<n;i++) state.neurons.push(new Neuron(Math.random()*canvas.width,Math.random()*canvas.height));
-    const r=Math.min(canvas.width,canvas.height)*0.4;
-    CONFIG.specialNeurons.forEach((sp,i)=>{
-        const angle=(Math.PI*2*i)/CONFIG.specialNeurons.length;
-        const x=state.networkBounds.centerX+r*Math.cos(angle);
-        const y=state.networkBounds.centerY+r*Math.sin(angle);
-        const neu=new Neuron(x,y,true,sp); sp.neuron=neu; state.neurons.push(neu);
-    });
 }
 
 
